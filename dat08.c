@@ -1,32 +1,36 @@
 #include <stdio.h>
 #include <omp.h>
 
-int main() {
-    int N = 10; // Número de términos en la serie
-    int M = 4;  // Número de vectores (procesadores)
-
-    // Calcula el tamaño de cada vector
-    int vector_size = N / M;
-
-    // Inicializa los vectores
-    int vectors[M][vector_size];
-
-    // Llena los vectores con la serie
+void seriePares(int *series, int N) {
     #pragma omp parallel for
-    for (int i = 0; i < M; i++) {
-        for (int j = 0; j < vector_size; j++) {
-            vectors[i][j] = 2 + i * 2 + j * 2;
-        }
+    for (int i = 0; i < N; i++) {
+        series[i] = (i + 1) * 2;
     }
+}
 
-    // Imprime los vectores
-    for (int i = 0; i < M; i++) {
-        printf("Vector %d: ", i);
-        for (int j = 0; j < vector_size; j++) {
-            printf("%d ", vectors[i][j]);
-        }
-        printf("\n");
+int main() {
+    int N, M;
+    
+    printf("ingrese el numero de terminos N: ");
+    scanf("%d", &N);
+    
+    printf("ingrese el numero de procesadores M (menor que 8): ");
+    scanf("%d", &M);
+
+    // estableecemos el numero de procesadores
+    omp_set_num_threads(M);
+
+    int series[N];
+
+    // llamamos a la funcion
+    seriePares(series, N);
+
+    // imprime la serie
+    printf("La serie es: ");
+    for (int i = 0; i < N; i++) {
+        printf("%d ", series[i]);
     }
+    printf("\n");
 
     return 0;
 }

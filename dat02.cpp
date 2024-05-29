@@ -1,46 +1,64 @@
 #include <iostream>
+using namespace std;
 
-// Función para sumar dos números
-int suma(int a, int b) {
-    return a + b;
+// Función para sumar dos números usando punteros
+void sumar(int *a, int *b, int *resultado) {
+    *resultado = *a + *b;
 }
 
-// Función para restar dos números
-int resta(int a, int b) {
-    return a - b;
+// Función para restar dos números usando punteros
+void restar(int *a, int *b, int *resultado) {
+    *resultado = *a - *b;
 }
 
-// Función para multiplicar dos números (en base a sumas)
-int multiplicacion(int a, int b) {
-    int resultado = 0;
-    for (int i = 0; i < b; i++) {
-        resultado += a;
+// Función para multiplicar dos números usando sumas repetidas
+void multiplicar(int *a, int *b, int *resultado) {
+    int multiplicando = *a;
+    int multiplicador = *b;
+    *resultado = 0;
+    for(int i = 0; i < multiplicador; i++) {
+        *resultado += multiplicando;
     }
-    return resultado;
 }
 
-// Función para dividir dos números (en base a restas)
-int division(int a, int b) {
-    int cociente = 0;
-    while (a >= b) {
-        a -= b;
-        cociente++;
+// Función para dividir dos números usando restas repetidas
+void dividir(int *a, int *b, int *resultado) {
+    int dividendo = *a;
+    int divisor = *b;
+    *resultado = 0;
+    while(dividendo >= divisor) {
+        dividendo -= divisor;
+        (*resultado)++;
     }
-    return cociente;
 }
 
 int main() {
-    int a = 10, b = 3;
-    int sum = suma(a, b);
-    int rest = resta(a, b);
-    int producto = multiplicacion(a, b);
-    int cociente = division(a, b);
+    int num1, num2;
+    int resultado;
+    char operacion;
 
-    std::cout << "Suma: " << sum << std::endl;
-    std::cout << "Resta: " << rest << std::endl;
-    std::cout << "Multiplicación: " << producto << std::endl;
-    std::cout << "División: " << cociente << std::endl;
+    // Ingreso de los números y la operación
+    cout << "Ingrese el primer número: ";
+    cin >> num1;
+
+    cout << "Ingrese el segundo número: ";
+    cin >> num2;
+
+    sumar(&num1, &num2, &resultado);
+    cout << "La suma de " << num1 << " y " << num2 << " es: " << resultado << endl;
+
+    restar(&num1, &num2, &resultado);
+    cout << "La resta de " << num1 << " y " << num2 << " es: " << resultado << endl;
+
+    multiplicar(&num1, &num2, &resultado);
+    cout << "La multiplicación de " << num1 << " y " << num2 << " es: " << resultado << endl;
+    
+    if(num2 == 0) {
+        cout << "Error: División por cero." << endl;
+    } else {
+        dividir(&num1, &num2, &resultado);
+        cout << "La división de " << num1 << " entre " << num2 << " es: " << resultado << endl;
+    }
 
     return 0;
 }
-

@@ -1,56 +1,69 @@
 #include <stdio.h>
 #include <mpi.h>
 
-#define MASTER 0
-#define TAG_REQUEST 1
-#define TAG_RESULT 2
+#define N 10 // numero de terminos
 
 int fibonacci(int n) {
     if (n <= 1)
         return n;
-    return fibonacci(n - 1) + fibonacci(n - 2);
+    else
+        return fibonacci(n - 1) + fibonacci(n - 2);
 }
 
 int main(int argc, char *argv[]) {
     int rank, size;
-    int n;
-    int result;
+    int i, termino, resultado;
+    int resultados[N][2]; // Array para almacenar los resultados y sus índices
 
     MPI_Init(&argc, &argv);
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &size);
 
-    if (rank == MASTER) {
-        printf("Ingrese el término de Fibonacci que desea calcular: ");
-        scanf("%d", &n);
+    if (size < 2) {
+        if (rank == 0) {
+            printf("se requiere mas de 2 terminos\n");
+        }
+        MPI_Finalize();
+        return 1;
+    }
 
-        // Enviar solicitudes a los esclavos para calcular los términos de Fibonacci
-        int term;
-        for (term = 0; term < n; term++) {
-            MPI_Send(&term, 1, MPI_INT, term % (size - 1) + 1, TAG_REQUEST, MPI_COMM_WORLD);
-            MPI_Recv(&result, 1, MPI_INT, term % (size - 1) + 1, TAG_RESULT, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-            printf("Término %d de Fibonacci: %d\n", term, result);
+    if (rank == 0) {
+        // Proceso maestro
+        for (i = 0; i < N; i++) {
+            // Enviar término a calcular a cada proceso esclavo
+            int destino = (i % (size - 1)) + 1;
+            MPI_Send(&i, 1, MPI_INT, destino, 0, MPI_COMM_WORLD);
         }
-        
-        // Enviar señal de terminación a los esclavos
-        for (int i = 1; i < size; i++) {
-            term = -1;
-            MPI_Send(&term, 1, MPI_INT, i, TAG_REQUEST, MPI_COMM_WORLD);
+
+        // Recibir resultados de los procesos esclavos
+        for (i = 0; i < N; i++) {
+            int buffer[2]; // Buffer para recibir el índice y el resultado
+            MPI_Recv(buffer, 2, MPI_INT, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+            int indice = buffer[0];
+            resultado = buffer[1];
+            resultados[indice][0] = indice;
+            resultados[indice][1] = resultado;
         }
+
+        // Imprimir resultados en orden
+        printf("serie de fibonacci:\n");
+        for (i = 0; i < N; i++) {
+            printf("%d ", resultados[i][1]);
+        }
+        printf("\n");
     } else {
-        // Esperar solicitudes de cálculo de términos de Fibonacci
-        int term;
-        while (1) {
-            MPI_Recv(&term, 1, MPI_INT, MASTER, TAG_REQUEST, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-            if (term == -1)
-                break; // Señal de terminación
-            result = fibonacci(term);
-            MPI_Send(&result, 1, MPI_INT, MASTER, TAG_RESULT, MPI_COMM_WORLD);
+        // Proceso esclavo
+        for (i = rank - 1; i < N; i += (size - 1)) {
+            // Recibir término a calcular del proceso maestro
+            MPI_Recv(&termino, 1, MPI_INT, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+            resultado = fibonacci(termino);
+            int buffer[2] = {termino, resultado}; // Buffer para enviar el índice y el resultado
+            // Enviar resultado al proceso maestro
+            MPI_Send(buffer, 2, MPI_INT, 0, 0, MPI_COMM_WORLD);
         }
     }
 
     MPI_Finalize();
-
     return 0;
 }
 
