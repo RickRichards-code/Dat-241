@@ -1,5 +1,6 @@
 # Dat-241
 1. En C implemente las funciones básicas (+.‐.*./); utilice punteros (Ej. Multiplicación en basea sumas, división con base en restas).
+
 **se compila:**
 
 ```bash 
