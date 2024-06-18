@@ -1,4 +1,4 @@
-# Dat-241
+# Primer Parcial
 1. En C implemente las funciones básicas (+.‐.*./); utilice punteros (Ej. Multiplicación en basea sumas, división con base en restas).
 
 **se compila:**
@@ -185,4 +185,40 @@ mpirun -np 4 dat12
 15. Despliegue “hola mundo” en la librería de su gusto.       
 
 ![run dat15](Screenshots/img15.png)
+
+
+# Segundo Parcial
+
+1. Realice un código NET que muestre datos de un estudiante utilizando capas
+
+2. Dado dos gráficos cualesquiera, convierta estás en una matriz sparce
+
+![run dat15](Screenshots/imf01.png)
+![run dat15](Screenshots/imf01-1.png)
+
+3. Realice la suma y resta de dos imágenes cualquiera con opencV
+
+![run dat15](Screenshots/imf02.png)
+![run dat15](Screenshots/imf02-1.png)
+
+
+
+4. Multiplique dos matrices sparce de más de 1000 filas y columnas
+
+![run dat15](Screenshots/imf03.png)
+![run dat15](Screenshots/imf02-2.png)
+![run dat15](Screenshots/imf02-3.png)
+![run dat15](Screenshots/imf03-1.png)
+
+5. Multiplique dos matrices sparce de más de 1000 filas y columnas de manera paralelo con Python (scypi y multprocessing) y c (openMP o MPI). Observación. El paralelismo se realiza por fila o columna, no una multiplicación directa y es a partir del sparce.
+![run dat15](Screenshots/imf03-2.png)
+![run dat15](Screenshots/imf03-3.png)
+
+6. Realice un ETL de la base de datos de ejemplo AdventureWork a MiDW (diseño propio)
+
+7. Realice una replicación de datos de una cuenta bancaria.
+
+
+
+
 
